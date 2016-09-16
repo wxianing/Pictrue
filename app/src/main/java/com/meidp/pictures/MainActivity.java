@@ -174,7 +174,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
             @Override
             public void onHanlderFailure(int requestCode, String errorMsg) {
-                Log.e("errorMsg",errorMsg);
+                Log.e("errorMsg",errorMsg +">>>>");
             }
         });
 
