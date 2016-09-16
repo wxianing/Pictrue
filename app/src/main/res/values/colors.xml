@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+
+    <color name="default_background_color">#F1F1F1</color>
+    <color name="dark">#FF222222</color>
+    <color name="light">#FFEEEEEE</color>
+
+    <!-- base color -->
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffff</color>
+    <color name="full_black">#000000</color>
+    <color name="black">#282828</color>
+    <color name="light_white">#f9f9f9</color>
+    <color name="blue">#087CF5</color>
+    <color name="textcolor_gray">#7a7a7a</color>
+    <color name="textcolor_black">#1D1D1D</color>
+    <color name="textcolor_orange">#EC6000</color>
+    <color name="textcolor_blue">#00BAED</color>
+    <color name="main_rg_text_color">#00AFF1</color>
+    <color name="gray_line">#DBDBDB</color>
+    <color name="ashen_while">#F7F7F7</color>
+    <color name="text_color_red">#ff0000</color>
+    <color name="login_btn_bg">#008FCE</color>
+    <color name="light_drak">#BDBDBD</color>
+
+
+    <color name="statusbar_bg">#00AFF1</color>
+
+    <color name="drak_orange">#EB8949</color>
+    <color name="head_bg_color">#087CF5</color>
+    <color name="listview_item_normal">#eef0ed</color>
+    <color name="listview_item_pressed">#d4d4d4</color>
+    <color name="tc_gray">#BDBDBD</color>
+
+    <color name="result_view">#b0000000</color>
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="possible_result_points">#c0ffff00</color>
+
+</resources>

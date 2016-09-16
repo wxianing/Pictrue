@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/layout"
+    android:layout_height="match_parent"
+    tools:context="com.meidp.pictures.MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp5"
+        android:src="@mipmap/previous_icon" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dp5"
+        android:src="@mipmap/next_icon" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/select_btn"
+            style="@style/button_style"
+            android:text="选图" />
+
+        <Button
+            android:id="@+id/crop_btn"
+            style="@style/button_style"
+            android:text="裁剪" />
+
+        <Button
+            style="@style/button_style"
+            android:text="批注" />
+
+        <Button
+            style="@style/button_style"
+            android:text="保存" />
+    </LinearLayout>
+
+</RelativeLayout>

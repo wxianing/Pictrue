@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Pictures</string>
+    <string name="title_alert">请选择方式</string>
+    <string name="cancal">取消</string>
+    <string name="take_photos">拍照</string>
+    <string name="open_album">打开相册</string>
+</resources>
