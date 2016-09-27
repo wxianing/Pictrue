@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/linear_white"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/linear_white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/text_18_ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp10"
+            android:layout_marginRight="@dimen/dp10"
+            android:layout_marginTop="@dimen/dp10"
+            android:gravity="center"
+            android:text="@string/title_alert"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/hint_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp10"
+            android:gravity="center"
+            android:padding="@dimen/dp10"
+            android:text="是否删除此批注?"
+            android:textColor="@color/black" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1.0dp"
+            android:background="#ffd0d0d0" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/linear_white"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/negativeButton"
+                android:layout_width="match_parent"
+                android:layout_height="35.0dip"
+                android:layout_marginLeft="@dimen/dp10"
+                android:layout_marginRight="@dimen/dp5"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:text="@string/cancel" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#ffd0d0d0" />
+
+            <Button
+                android:id="@+id/positiveButton"
+                android:layout_width="match_parent"
+                android:layout_height="35.0dip"
+                android:layout_marginLeft="@dimen/dp5"
+                android:layout_marginRight="@dimen/dp10"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:text="@string/ok" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

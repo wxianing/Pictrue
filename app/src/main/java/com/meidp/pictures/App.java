@@ -23,10 +23,10 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         //配置主题
-//ThemeConfig.CYAN
+        //ThemeConfig.CYAN
         ThemeConfig theme = new ThemeConfig.Builder()
                 .build();
-//配置功能
+        //配置功能
         FunctionConfig functionConfig = new FunctionConfig.Builder()
                 .setEnableCamera(true)
                 .setEnableEdit(true)

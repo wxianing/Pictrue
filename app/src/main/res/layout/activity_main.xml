@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.meidp.pictures.MainActivity">
 
@@ -34,21 +36,35 @@
 
         <Button
             android:id="@+id/select_btn"
-            style="@style/button_style"
+            style="@style/blue_button_style"
             android:text="选图" />
 
         <Button
-            android:id="@+id/crop_btn"
             style="@style/button_style"
+            android:text="添加批注" />
+
+        <Button
+            android:id="@+id/crop_btn"
+            style="@style/crop_button_style"
             android:text="裁剪" />
 
         <Button
-            style="@style/button_style"
-            android:text="批注" />
-
-        <Button
-            style="@style/button_style"
+            style="@style/save_button_style"
             android:text="保存" />
+
     </LinearLayout>
 
+    <AbsoluteLayout
+        android:layout_x="120px"
+        android:layout_y="120px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+
+            android:text="测试"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </AbsoluteLayout>
 </RelativeLayout>
