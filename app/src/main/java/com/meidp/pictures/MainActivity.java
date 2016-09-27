@@ -141,6 +141,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         for (int i = 0; i < photosDataLists.size(); i++) {
                             final PhotosData photosData = photosDataLists.get(i);
                             TextView tv = new TextView(this);
+
+
                             tv.setX(photosData.getXcoordinate());
                             tv.setY(photosData.getYcoordinate());
                             tv.setBackgroundResource(R.drawable.round_shape);
@@ -150,7 +152,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             absoluteLayout.addView(tv);
 
                             TextView notetv = new TextView(MainActivity.this);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 50);
+                            params.rightMargin = 5;
+                            params.gravity = Gravity.CENTER;
+                            notetv.setLayoutParams(params);
                             notetv.setGravity(Gravity.CENTER);
+                            notetv.setTextSize(12);
+
                             notetv.setText("批注" + photosData.getNumber());
                             notetv.setBackgroundResource(R.drawable.orange_btn_shape);
                             notetv.setTextColor(Color.rgb(235, 147, 73));
@@ -172,9 +180,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                             content_ll.addView(notetv);
                         }
-                        currindex = photosDataLists.get(0).getNumber() + 1;
+//                        currindex = photosDataLists.get(0).getNumber() + 1;
                         Log.e("currindex", ">>>>>>>>" + currindex);
-//                        currindex = photosDataLists.size() + 1;
+                        currindex = photosDataLists.size() + 1;
                     }
                 }
             } catch (Exception e) {
@@ -308,6 +316,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 RelativeLayout.LayoutParams ll = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 ll.setMargins(10, 10, 10, 10);
                 TextView tv = new TextView(MainActivity.this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 50);
+                params.rightMargin = 5;
+                params.gravity = Gravity.CENTER;
+                tv.setLayoutParams(params);
+                tv.setGravity(Gravity.CENTER);
+                tv.setTextSize(12);
                 tv.setLayoutParams(ll);
                 tv.setGravity(Gravity.CENTER);
                 tv.setText("批注" + (currindex++));

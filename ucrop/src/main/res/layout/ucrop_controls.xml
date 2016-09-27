@@ -2,12 +2,12 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <FrameLayout
-        android:visibility="gone"
         android:id="@+id/wrapper_controls"
         android:layout_width="match_parent"
         android:layout_height="@dimen/ucrop_height_wrapper_controls"
         android:layout_above="@+id/wrapper_states"
-        android:background="@color/ucrop_color_widget_background">
+        android:background="@color/ucrop_color_widget_background"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/layout_aspect_ratio"
@@ -44,7 +44,8 @@
 
         <FrameLayout
             android:id="@+id/state_scale"
-            style="@style/ucrop_WrapperIconState">
+            style="@style/ucrop_WrapperIconState"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/image_view_state_scale"
@@ -66,7 +67,8 @@
 
         <FrameLayout
             android:id="@+id/state_rotate"
-            style="@style/ucrop_WrapperIconState">
+            style="@style/ucrop_WrapperIconState"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/image_view_state_rotate"
@@ -75,7 +77,9 @@
 
         </FrameLayout>
 
-        <FrameLayout style="@style/ucrop_WrapperIconState">
+        <FrameLayout
+            style="@style/ucrop_WrapperIconState"
+            android:visibility="gone">
 
             <ImageView
                 style="@style/ucrop_ImageViewWidgetIcon"

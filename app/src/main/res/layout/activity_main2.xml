@@ -10,16 +10,23 @@
 
         <AbsoluteLayout
             android:id="@+id/absoluteLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/note_layout"
+            android:layout_below="@+id/button_layout"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dp3"
+            android:layout_toLeftOf="@+id/next_img"
+            android:layout_toRightOf="@+id/previous_img"
             android:background="@drawable/ab_shape">
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher" />
 
         </AbsoluteLayout>
 
@@ -41,10 +48,12 @@
             android:src="@mipmap/next_icon" />
 
         <LinearLayout
+            android:id="@+id/button_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="25dp"
             android:layout_alignParentRight="true"
-            android:padding="10dp">
+            android:layout_marginRight="@dimen/dp5"
+            android:layout_marginTop="@dimen/dp3">
 
             <Button
                 android:id="@+id/select_btn"
@@ -69,12 +78,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/note_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp20"
-            android:layout_marginLeft="@dimen/dp50"
-            android:layout_marginRight="@dimen/dp50"
+            android:layout_marginBottom="@dimen/dp3"
+            android:layout_toLeftOf="@+id/next_img"
+            android:layout_toRightOf="@+id/previous_img"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -92,6 +102,7 @@
                 android:layout_weight="1"
                 android:orientation="horizontal" />
         </LinearLayout>
+
     </RelativeLayout>
 
 </AbsoluteLayout>

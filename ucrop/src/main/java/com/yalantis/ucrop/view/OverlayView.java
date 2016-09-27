@@ -21,7 +21,7 @@ import com.yalantis.ucrop.util.RectUtils;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
- * <p/>
+ * <p>
  * This view is used for drawing the overlay on top of the image. It may have frame, crop guidelines and dimmed area.
  * This must have LAYER_TYPE_SOFTWARE to draw itself properly.
  */
