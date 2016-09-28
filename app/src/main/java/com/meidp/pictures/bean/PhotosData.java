@@ -18,6 +18,16 @@ public class PhotosData implements Serializable {
 
     private String content;
 
+    private NotePhoto photo;
+
+    public NotePhoto getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(NotePhoto photo) {
+        this.photo = photo;
+    }
+
     public PhotosData() {
     }
 

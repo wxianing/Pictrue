@@ -18,8 +18,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AbsoluteLayout;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.meidp.pictures.bean.NotePhoto;
 import com.meidp.pictures.bean.PhotoKey;
 import com.meidp.pictures.bean.Photos;
 import com.meidp.pictures.bean.PhotosData;
@@ -63,15 +66,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private Photos photos;
     private Photos p;
     private Uri outputUri;
-
     private ImageView previous_img;
-
     private ImageView next_img;
-
     private Button save_btn;
-    private String name;
+    private String name = "";
     private final static int PHOTO_REQUEST_IMGNOTE = 4;//添加批注
 
+    private Button open;
+    private ImageView add_img_note;
+    private NotePhoto notePhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +82,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         setContentView(R.layout.activity_main2);
         initView();
         initEvent();
-
     }
 
     private List<PhotosData> photosDataLists = new ArrayList<>();
 
     private void initView() {
+
+//        SPUtils.clear(this);
 
         select_btn = (Button) findViewById(R.id.select_btn);
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -97,11 +101,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         next_img = (ImageView) findViewById(R.id.next_img);
         add_note = (Button) findViewById(R.id.add_note);
         save_btn = (Button) findViewById(R.id.save_btn);
-
+        open = (Button) findViewById(R.id.open);
 
 //        SPUtils.clear(this);
 
         photos = new Photos();
+
         p = new Photos();
         String keyString = (String) SPUtils.get(this, "PhotoKey", "");
         Log.e("keyString", ">>>>>>>>>>" + keyString);
@@ -111,9 +116,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (photoKey != null) {
                 keyLists = photoKey.getKeys();
                 if (keyLists != null && keyLists.size() > 0) {
-
                     String key = keyLists.get(keyLists.size() - 1);//默认打开最后一张图
-
                     initImage(key);
                 }
             }
@@ -130,24 +133,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 p = JSONObject.parseObject(result, new TypeReference<Photos>() {
                 });
                 if (p != null) {
+                    clearData();
                     String url = p.getPaths();
                     imgPaths = url;
+                    outputUri = Uri.parse(url);
                     Log.e("imgPaths", imgPaths);
                     Bitmap bitmap = ImageUtils.getBitmapFromUri(Uri.parse(url), MainActivity.this);
                     imageView.setImageBitmap(bitmap);
+
                     photosDataLists.addAll(p.getPhotosDatas());
 
                     if (photosDataLists != null && photosDataLists.size() > 0) {
                         for (int i = 0; i < photosDataLists.size(); i++) {
+                            int index = i + 1;
                             final PhotosData photosData = photosDataLists.get(i);
                             TextView tv = new TextView(this);
-
 
                             tv.setX(photosData.getXcoordinate());
                             tv.setY(photosData.getYcoordinate());
                             tv.setBackgroundResource(R.drawable.round_shape);
                             tv.setGravity(Gravity.CENTER);
-                            tv.setText(photosData.getNumber() + "");
+                            tv.setText(index + "");
                             tv.setTag("B");
                             absoluteLayout.addView(tv);
 
@@ -159,13 +165,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             notetv.setGravity(Gravity.CENTER);
                             notetv.setTextSize(12);
 
-                            notetv.setText("批注" + photosData.getNumber());
+                            notetv.setText("批注" + index);
                             notetv.setBackgroundResource(R.drawable.orange_btn_shape);
                             notetv.setTextColor(Color.rgb(235, 147, 73));
                             notetv.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    ToastUtils.showl(MainActivity.this, photosData.getContent());
+//                                    ToastUtils.showl(MainActivity.this, photosData.getContent());
+                                    showNoteMsgDialog(photosData.getContent(), photosData);
                                 }
                             });
 
@@ -180,7 +187,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                             content_ll.addView(notetv);
                         }
-//                        currindex = photosDataLists.get(0).getNumber() + 1;
+//                        currindex = photosDataLists.get(photosDataLists.size() - 1).getNumber() + 1;
                         Log.e("currindex", ">>>>>>>>" + currindex);
                         currindex = photosDataLists.size() + 1;
                     }
@@ -199,6 +206,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         add_note.setOnClickListener(this);
         previous_img.setOnClickListener(this);
         next_img.setOnClickListener(this);
+        open.setOnClickListener(this);
     }
 
     int index = 0;
@@ -242,8 +250,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     initImage(key);
                 }
 
-
                 break;
+
             case R.id.next_img:
                 if (keyLists != null && keyLists.size() > 0) {
                     clearData();
@@ -257,7 +265,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                 break;
             case R.id.save_btn:
-                ToastUtils.shows(this, "正在保存");
+
+                if (keyLists != null && keyLists.size() > 0) {
+                    for (int i = 0; i < keyLists.size(); i++) {
+                        if (keyLists.get(i).equals(name)) {
+                            keyLists.remove(i);
+                        }
+                    }
+                }
+
                 keyLists.add(name);
                 PhotoKey photoKey = new PhotoKey();
                 photoKey.setKeys(keyLists);
@@ -265,6 +281,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 SPUtils.save(this, "PhotoKey", photoKeyString);
                 String photoString = JSONObject.toJSONString(p);
                 SPUtils.save(MainActivity.this, name, photoString);
+                Log.e("PhotoString", photoString);
+                ToastUtils.shows(this, "保存成功");
+                p.setPhotosDatas(null);
+
+                break;
+            case R.id.open:
+                showOpenDialog();
                 break;
         }
     }
@@ -272,7 +295,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private void startCrop(Uri sourceUri) {
 //        Uri sourceUri = Uri.parse("http://star.xiziwang.net/uploads/allimg/140512/19_140512150412_1.jpg");
         //裁剪后保存到文件中
-        clearData();
+
         Uri destinationUri = Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".png"));
 
         UCrop.of(sourceUri, destinationUri).start(this);
@@ -288,7 +311,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         titleName.setText("批注");
         dialog.setContentView(contentView);
         dialog.setCanceledOnTouchOutside(true);
-        ImageView add_img_note = (ImageView) contentView.findViewById(R.id.add_img_note);
+        add_img_note = (ImageView) contentView.findViewById(R.id.add_img_note);
 
         Button negativeButton = (Button) contentView.findViewById(R.id.negativeButton);
         negativeButton.setClickable(true);
@@ -305,7 +328,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onClick(View v) {
                 final String content = editText.getText().toString().trim();
-                PhotosData data = accountSetData();
+                final PhotosData data = accountSetData();
+                if (notePhoto != null) {
+                    data.setPhoto(notePhoto);
+                }
                 data.setContent(content);
                 photosDataLists.add(data);
                 p.setPaths(imgPaths);
@@ -313,11 +339,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 name = imgPaths.substring(dot + 1);
                 p.setImageName(name);
                 p.setPhotosDatas(photosDataLists);
+
                 RelativeLayout.LayoutParams ll = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 ll.setMargins(10, 10, 10, 10);
                 TextView tv = new TextView(MainActivity.this);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 50);
                 params.rightMargin = 5;
+                params.leftMargin = 5;
                 params.gravity = Gravity.CENTER;
                 tv.setLayoutParams(params);
                 tv.setGravity(Gravity.CENTER);
@@ -328,14 +356,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 tv.setBackgroundResource(R.drawable.orange_btn_shape);
                 tv.setTextColor(Color.rgb(235, 147, 73));
                 content_ll.addView(tv);
-
                 tv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ToastUtils.showl(MainActivity.this, content);
+//                        ToastUtils.showl(MainActivity.this, content);
+                        showNoteMsgDialog(content, data);
                     }
                 });
 
+                notePhoto = null;
                 dialog.dismiss();
             }
         });
@@ -360,6 +389,48 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         dialog.show();
     }
 
+    private void showOpenDialog() {
+        final Dialog dialog = new Dialog(MainActivity.this, R.style.Dialog);
+        View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.photo_dialog_layout, null);
+        dialog.setContentView(contentView);
+        dialog.setCanceledOnTouchOutside(true);
+        GridView gridview = (GridView) contentView.findViewById(R.id.gridview);
+        Log.e("keyLists", ">>>>>>>>>" + keyLists.size());
+        final PhotoAdapter mAdapter = new PhotoAdapter(keyLists, MainActivity.this);
+
+        gridview.setAdapter(mAdapter);
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String key = keyLists.get(position);
+                initImage(key);
+                dialog.dismiss();
+            }
+        });
+
+        gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                PhotoAdapter.ViewHolder vh = (PhotoAdapter.ViewHolder) view.getTag();
+                vh.delete_img.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+
+        Window dialogWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+
+        WindowManager wm = getWindowManager();
+        Display d = wm.getDefaultDisplay(); // 获取屏幕宽、高用
+        lp.height = (int) (d.getHeight() * 0.8); // 高度设置为屏幕的0.6
+        lp.width = (int) (d.getWidth() * 0.7); // 宽度设置为屏幕的0.35
+
+        dialogWindow.setAttributes(lp);
+        dialog.show();
+
+    }
+
     private void showDialog() {
         final Dialog dialog = new Dialog(MainActivity.this, R.style.Dialog);
         View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.customer_dialog_layout, null);
@@ -378,7 +449,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         open_album.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 gallery();
                 dialog.dismiss();
             }
@@ -392,6 +462,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 dialog.dismiss();
             }
         });
+
+        Window dialogWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+
+        WindowManager wm = getWindowManager();
+        Display d = wm.getDefaultDisplay(); // 获取屏幕宽、高用
+//        p.height = (int) (d.getHeight() * 0.6); // 高度设置为屏幕的0.6
+        lp.width = (int) (d.getWidth() * 0.4); // 宽度设置为屏幕的0.35
+
+        dialogWindow.setAttributes(lp);
+
+        dialog.show();
+    }
+
+    private void showNoteMsgDialog(String msg, PhotosData data) {
+        final Dialog dialog = new Dialog(MainActivity.this, R.style.Dialog);
+        View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.show_msg_dialog_layout, null);
+        dialog.setContentView(contentView);
+        dialog.setCanceledOnTouchOutside(true);
+
+        TextView content = (TextView) contentView.findViewById(R.id.note_content);
+        content.setText(msg);
+        ImageView noteImg = (ImageView) contentView.findViewById(R.id.note_img);
+        if (data.getPhoto() != null) {
+            String url = data.getPhoto().getPaths();
+            Uri uri = Uri.parse(url);
+            Bitmap bm = ImageUtils.getBitmapFromUri(uri, this);
+            noteImg.setImageBitmap(bm);
+        }
 
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
@@ -575,6 +674,41 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 SPUtils.save(MainActivity.this, "Image", pString);
             }
 
+        } else if (requestCode == PHOTO_REQUEST_IMGNOTE) {
+            if (data != null) {
+                Bitmap bm = null;
+                try {
+                    Uri uri = data.getData();
+                    Log.e("uriPath", uri.getPath());
+                    bm = ImageUtils.getBitmapFromUri(uri, this);
+                    notePhoto = new NotePhoto();
+
+                    //把bitmap转成文件
+                    File dirFile = new File(path);//文件夹路径
+                    if (!dirFile.exists()) {
+                        dirFile.mkdir();
+                    }
+
+                    File file = new File(path + System.currentTimeMillis() + ".png");//图片完整名称
+
+                    FileOutputStream fos = new FileOutputStream(file);
+                    BufferedOutputStream bos = new BufferedOutputStream(fos);
+                    bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                    bos.flush();
+                    bos.close();//关闭流
+
+                    String imgPaths = Uri.fromFile(file).toString();
+
+                    int dot = imgPaths.lastIndexOf("/");
+                    String imageName = imgPaths.substring(dot + 1);
+                    notePhoto.setPaths(imgPaths);
+                    notePhoto.setImageName(imageName);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                this.add_img_note.setImageBitmap(bm);
+            }
         } else if (requestCode == PHOTO_REQUEST_CAMERA) {// 拍照
             if (hasSdcard()) {
                 clearData();
@@ -597,7 +731,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (tempFile != null) {
                     boolean delete = tempFile.delete();
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -607,13 +740,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             imgPaths = outputUri.toString();
             imageView.setImageBitmap(bm);
         } else if (requestCode == UCrop.REQUEST_CROP && data != null) {
+            clearData();
             Uri croppedFileUri = UCrop.getOutput(data);
             outputUri = croppedFileUri;
             Bitmap bm = ImageUtils.getBitmapFromUri(croppedFileUri, this);
             saveBitmapFile(bm);
             imageView.setImageBitmap(bm);
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -633,10 +766,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             bos.flush();
             bos.close();//关闭流
             //打开图片
+
+            String namestr = Uri.fromFile(file).toString();
+            int dot = namestr.lastIndexOf("/");
+            name = namestr.substring(dot + 1);
+
             imgPaths = Uri.fromFile(file).toString();
             p.setPaths(Uri.fromFile(file).toString());
-            String pString = JSONObject.toJSONString(p);
-            SPUtils.save(MainActivity.this, "Image", pString);
 
         } catch (IOException e) {
             e.printStackTrace();

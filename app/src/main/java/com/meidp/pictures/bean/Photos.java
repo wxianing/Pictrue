@@ -13,6 +13,7 @@ public class Photos implements Serializable {
 
     private String paths;
     private String imageName;
+
     private List<PhotosData> photosDatas;
 
     public String getImageName() {

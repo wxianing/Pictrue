@@ -15,7 +15,7 @@
     </style>
 
     <style name="button_style">
-        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:background">@drawable/button_shape</item>
@@ -24,7 +24,7 @@
     </style>
 
     <style name="save_button_style">
-        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:background">@drawable/save_button_shape</item>
@@ -33,7 +33,7 @@
     </style>
 
     <style name="crop_button_style">
-        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:background">@drawable/crop_button_shape</item>
@@ -42,7 +42,7 @@
     </style>
 
     <style name="blue_button_style">
-        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:background">@drawable/blue_button_shape</item>

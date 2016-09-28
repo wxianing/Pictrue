@@ -91,7 +91,7 @@ public class UCropActivity extends AppCompatActivity {
     private UCropView mUCropView;
     private GestureCropImageView mGestureCropImageView;
     private OverlayView mOverlayView;
-    private ViewGroup mWrapperStateAspectRatio, mWrapperStateRotate, mWrapperStateScale, mWrapperStateSave;
+    private ViewGroup mWrapperStateAspectRatio, mWrapperStateRotate, mWrapperStateScale, mWrapperStateSave,mWrapperStateBack;
     private ViewGroup mLayoutAspectRatio, mLayoutRotate, mLayoutScale;
     private List<ViewGroup> mCropAspectRatioViews = new ArrayList<>();
     private TextView mTextViewRotateAngle, mTextViewScalePercent;
@@ -285,7 +285,8 @@ public class UCropActivity extends AppCompatActivity {
             mWrapperStateScale.setOnClickListener(mStateClickListener);
             mWrapperStateSave = (ViewGroup) findViewById(R.id.state_save);
             mWrapperStateSave.setOnClickListener(mStateClickListener);//保存
-
+            mWrapperStateBack = (ViewGroup) findViewById(R.id.ucrop_frame_back);
+            mWrapperStateBack.setOnClickListener(mStateClickListener);
 
             mLayoutAspectRatio = (ViewGroup) findViewById(R.id.layout_aspect_ratio);
             mLayoutRotate = (ViewGroup) findViewById(R.id.layout_rotate_wheel);
@@ -569,6 +570,8 @@ public class UCropActivity extends AppCompatActivity {
 
         if (stateViewId == R.id.state_scale) {
             setAllowedGestures(0);
+        } else if (stateViewId == R.id.ucrop_frame_back) {
+            finish();
         } else if (stateViewId == R.id.state_rotate) {
             setAllowedGestures(1);
         } else if (stateViewId == R.id.state_save) {

@@ -6,105 +6,111 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/linear_white"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/title"
-            style="@style/text_18_ffffff"
-            android:layout_width="match_parent"
-            android:layout_height="40.0dip"
-            android:layout_marginLeft="@dimen/dp10"
-            android:layout_marginRight="@dimen/dp10"
-            android:gravity="center"
-            android:text="请填写批注内容"
-            android:visibility="visible" />
+        android:scrollbars="none">
 
         <LinearLayout
-            android:id="@+id/content"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp5"
-            android:layout_marginLeft="@dimen/dp10"
-            android:layout_marginRight="@dimen/dp10"
-            android:background="@color/white"
-            android:gravity="center"
+            android:layout_gravity="center"
+            android:background="@drawable/linear_white"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/message"
-                style="@style/text_16_666666"
+            <TextView
+                android:id="@+id/title"
+                style="@style/text_18_ffffff"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginBottom="@dimen/dp5"
-                android:layout_marginLeft="@dimen/dp5"
-                android:layout_marginRight="@dimen/dp5"
-                android:layout_marginTop="@dimen/dp5"
-                android:background="@drawable/dialog_edittext"
-                android:gravity="center_vertical"
-                android:hint="请填写批注内容"
-                android:textSize="@dimen/sp14" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp5">
-
-            <ImageView
-                android:id="@+id/add_img_note"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40.0dip"
                 android:layout_marginLeft="@dimen/dp10"
-                android:src="@mipmap/add_doc_img" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1.0dp"
-            android:background="#ffd0d0d0" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/linear_white"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/negativeButton"
-                android:layout_width="match_parent"
-                android:layout_height="35.0dip"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp5"
-                android:layout_weight="1"
-                android:background="@color/transparent"
+                android:layout_marginRight="@dimen/dp10"
                 android:gravity="center"
-                android:text="@string/cancel" />
+                android:text="请填写批注内容"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp5"
+                android:layout_marginLeft="@dimen/dp10"
+                android:layout_marginRight="@dimen/dp10"
+                android:background="@color/white"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/message"
+                    style="@style/text_16_666666"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="@dimen/dp5"
+                    android:layout_marginLeft="@dimen/dp5"
+                    android:layout_marginRight="@dimen/dp5"
+                    android:layout_marginTop="@dimen/dp5"
+                    android:background="@drawable/dialog_edittext"
+                    android:gravity="center_vertical"
+                    android:hint="请填写批注内容"
+                    android:textSize="@dimen/sp14" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp5">
+
+                <ImageView
+                    android:id="@+id/add_img_note"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:src="@mipmap/add_doc_img" />
+
+            </LinearLayout>
 
             <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dp"
                 android:background="#ffd0d0d0" />
 
-            <Button
-                android:id="@+id/positiveButton"
-                android:layout_width="match_parent"
-                android:layout_height="35.0dip"
-                android:layout_marginLeft="@dimen/dp5"
-                android:layout_marginRight="@dimen/dp10"
-                android:layout_weight="1"
-                android:background="@color/transparent"
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/linear_white"
                 android:gravity="center"
-                android:text="@string/ok" />
+                android:orientation="horizontal">
 
+                <Button
+                    android:id="@+id/negativeButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="35.0dip"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp5"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:gravity="center"
+                    android:text="@string/cancel" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#ffd0d0d0" />
+
+                <Button
+                    android:id="@+id/positiveButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="35.0dip"
+                    android:layout_marginLeft="@dimen/dp5"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:gravity="center"
+                    android:text="@string/ok" />
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </FrameLayout>
