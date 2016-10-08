@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -29,16 +31,19 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.meidp.pictures.activity.BaseActivity;
 import com.meidp.pictures.adapter.ImageAdapter;
 import com.meidp.pictures.bean.NotePhoto;
 import com.meidp.pictures.bean.PhotoKey;
 import com.meidp.pictures.bean.Photos;
 import com.meidp.pictures.bean.PhotosData;
+import com.meidp.pictures.utils.FileUtils;
 import com.meidp.pictures.utils.ImageUtils;
 import com.meidp.pictures.utils.NullUtils;
 import com.meidp.pictures.utils.SPUtils;
 import com.meidp.pictures.utils.ToastUtils;
-import com.soundcloud.android.crop.Crop;
+import com.xinlan.imageeditlibrary.editimage.EditImageActivity;
+import com.xinlan.imageeditlibrary.editimage.utils.BitmapUtils;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.BufferedOutputStream;
@@ -52,9 +57,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private static final int PHOTO_REQUEST_CAMERA = 1;// 拍照
     public static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
-    private static final int PHOTO_REQUEST_CUT = 3;// 结果
+    public static final int ACTION_REQUEST_EDITIMAGE = 3;//裁剪
     private static final String PHOTO_FILE_NAME = "temp_photo.jpg";
     private static final String path = Environment.getExternalStorageDirectory() + File.separator + "picture" + File.separator;
+
     private Button select_btn;
     private Button crop_btn;
     private File tempFile;
@@ -76,6 +82,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private Button open;
     private ImageView add_img_note;
     private NotePhoto notePhoto;
+    private int imageWidth, imageHeight;
+
+    private List<String> keyLists = new ArrayList<>();//保存图片的数据集合
+    private List<PhotosData> photosDataLists = new ArrayList<>();
+    private String imgPaths = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +97,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         initEvent();
     }
 
-    private List<PhotosData> photosDataLists = new ArrayList<>();
-
     private void initView() {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        imageWidth = metrics.widthPixels;
+        imageHeight = metrics.heightPixels;
 
 //        SPUtils.clear(this);
 
@@ -103,8 +116,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         add_note = (Button) findViewById(R.id.add_note);
         save_btn = (Button) findViewById(R.id.save_btn);
         open = (Button) findViewById(R.id.open);
-
-//        SPUtils.clear(this);
 
         photos = new Photos();
 
@@ -124,8 +135,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    List<String> keyLists = new ArrayList<>();//保存图片的数据集合
-
     private void initImage(final String imageString) {
         String result = (String) SPUtils.get(this, imageString, "");
         Log.e("result", "数据集合：" + result);
@@ -141,15 +150,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     Log.e("imgPaths", imgPaths);
                     Bitmap bitmap = ImageUtils.getBitmapFromUri(Uri.parse(url), MainActivity.this);
                     imageView.setImageBitmap(bitmap);
-
                     photosDataLists.addAll(p.getPhotosDatas());
-
                     if (photosDataLists != null && photosDataLists.size() > 0) {
                         for (int i = 0; i < photosDataLists.size(); i++) {
                             int index = i + 1;
                             final PhotosData photosData = photosDataLists.get(i);
                             TextView tv = new TextView(this);
-
                             tv.setX(photosData.getXcoordinate());
                             tv.setY(photosData.getYcoordinate());
                             tv.setBackgroundResource(R.drawable.round_shape);
@@ -157,7 +163,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             tv.setText(index + "");
                             tv.setTag("B");
                             absoluteLayout.addView(tv);
-
                             TextView notetv = new TextView(MainActivity.this);
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 50);
                             params.rightMargin = 5;
@@ -165,7 +170,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             notetv.setLayoutParams(params);
                             notetv.setGravity(Gravity.CENTER);
                             notetv.setTextSize(12);
-
                             notetv.setText("批注" + index);
                             notetv.setBackgroundResource(R.drawable.orange_btn_shape);
                             notetv.setTextColor(Color.rgb(235, 147, 73));
@@ -176,7 +180,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                                     showNoteMsgDialog(photosData.getContent(), photosData);
                                 }
                             });
-
                             final int finalI = i;
                             notetv.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
@@ -219,17 +222,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 showDialog();
                 break;
             case R.id.crop_btn:
-                imageView.buildDrawingCache();
-                Bitmap bmp = imageView.getDrawingCache();
-                Uri uri = ImageUtils.getUriFromBitmap(bmp, this);
-//                crop(uri, bmp);
-                if (outputUri == null) {
-                    outputUri = uri;
-                }
+
 //                Bitmap b = imageCrop(bmp);
 //                imageView.setImageBitmap(b);
-                Crop.of(uri, outputUri).asSquare().start(this);
+//                Crop.of(uri, outputUri).asSquare().start(this);
 //                startCrop(outputUri);
+
+                Uri uri = Uri.parse(imgPaths);
+
+                Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
+                intent.putExtra(EditImageActivity.FILE_PATH, uri.getPath());
+                File outputFile = FileUtils.getEmptyFile("picture"
+                        + System.currentTimeMillis() + ".png");
+                intent.putExtra(EditImageActivity.EXTRA_OUTPUT,
+                        outputFile.getAbsolutePath());
+                MainActivity.this.startActivityForResult(intent,
+                        ACTION_REQUEST_EDITIMAGE);
                 break;
             case R.id.add_note:
                 View view = absoluteLayout.getChildAt(absoluteLayout.getChildCount() - 1);
@@ -291,17 +299,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 showOpenDialog();
                 break;
         }
-    }
-
-    private void startCrop(Uri sourceUri) {
-//        Uri sourceUri = Uri.parse("http://star.xiziwang.net/uploads/allimg/140512/19_140512150412_1.jpg");
-        //裁剪后保存到文件中
-
-        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".png"));
-
-        UCrop.of(sourceUri, destinationUri).start(this);
-//        UCrop.of(sourceUri, destinationUri).withAspectRatio(1, 1).withMaxResultSize(800, 800).start(this);
-
     }
 
     private void showaddnoteDialog() {
@@ -396,12 +393,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         dialog.setContentView(contentView);
         dialog.setCanceledOnTouchOutside(true);
         GridView gridview = (GridView) contentView.findViewById(R.id.gridview);
+
         Log.e("keyLists", ">>>>>>>>>" + keyLists.size());
 
         for (int i = 0; i < keyLists.size(); i++) {
             Log.e("keyLists:", keyLists.get(i));
         }
-
 
         final ImageAdapter mAdapter = new ImageAdapter(keyLists, MainActivity.this);
 
@@ -445,6 +442,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         dialog.setCanceledOnTouchOutside(true);
         //取消
         TextView cancal = (TextView) contentView.findViewById(R.id.cancel);
+
         cancal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -460,6 +458,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 dialog.dismiss();
             }
         });
+
         //拍照
         TextView take_photos = (TextView) contentView.findViewById(R.id.take_photos);
         take_photos.setOnClickListener(new View.OnClickListener() {
@@ -560,6 +559,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         dialogWindow.setAttributes(lp);
         dialog.show();
+
     }
 
     /**
@@ -571,33 +571,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         intent.setType("image/*");
 //        intent.setType(path);
         startActivityForResult(intent, PHOTO_REQUEST_GALLERY);
-
-
-//        ComponentName component = new ComponentName("com.meidp.pictures", "com.meidp.pictures.MainActivity");
-//
-//        Intent intent = new Intent();
-//
-//        intent.setComponent(component);
-//        startActivityForResult(intent, PHOTO_REQUEST_GALLERY);
-//
-//        GalleryFinal.openGallerySingle(PHOTO_REQUEST_GALLERY, new GalleryFinal.OnHanlderResultCallback() {
-//            @Override
-//            public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-//                if (reqeustCode == PHOTO_REQUEST_GALLERY && resultList != null && resultList.size() > 0) {
-//                    String path = resultList.get(0).getPhotoPath();
-//                    Uri uri = Uri.parse(path);
-//                    Bitmap b = ImageUtils.getBitmapFromUri(uri, MainActivity.this);
-//                    imageView.setImageBitmap(b);
-//                }
-//            }
-//            @Override
-//            public void onHanlderFailure(int requestCode, String errorMsg) {
-//                Log.e("errorMsg",errorMsg +">>>>");
-//            }
-//        });
-
-//带配置
-//        GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, functionConfig, mOnHanlderResultCallback);
     }
 
     /**
@@ -628,31 +601,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    private void crop(Uri uri, Bitmap b) {
-        // 裁剪图片意图
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("crop", "true");
-        // 裁剪框的比例，1：1
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        // 裁剪后输出图片的尺寸大小
-        int w = 4 * b.getWidth(); // 得到图片的宽，高
-        int h = 4 * b.getHeight();
-        intent.putExtra("outputX", 800);
-        intent.putExtra("outputY", 800);
-        // 图片格式
-        intent.putExtra("outputFormat", "JPEG");
-        intent.putExtra("noFaceDetection", true);// 取消人脸识别
-        intent.putExtra("return-data", true);// true:不返回bitmap，false：返回bitmap
-
-        startActivityForResult(intent, PHOTO_REQUEST_CUT);
-    }
-
-    String imgPaths = "";
-
     private void clearData() {
-//        SPUtils.remove(this, "Image");
         content_ll.removeAllViews();
         photosDataLists.clear();
         for (int i = absoluteLayout.getChildCount() - 1; i > 0; i--) {
@@ -669,10 +618,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 clearData();
                 // 得到图片的全路径
                 Uri uri = data.getData();
-                photoUri = uri;
                 outputUri = uri;
                 Log.e("uriPath", uri.getPath());
                 imgPaths = uri.toString();
+                Log.e("ImgPaths", "onActivityResult: " + imgPaths);
                 Bitmap bm = ImageUtils.getBitmapFromUri(uri, this);
                 this.imageView.setImageBitmap(bm);
                 saveBitmapFile(bm);
@@ -680,8 +629,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 String pString = JSONObject.toJSONString(p);
                 SPUtils.save(MainActivity.this, "Image", pString);
             }
-
-        } else if (requestCode == PHOTO_REQUEST_IMGNOTE) {
+        } else if (requestCode == PHOTO_REQUEST_IMGNOTE) {//批注添加图片
             if (data != null) {
                 Bitmap bm = null;
                 try {
@@ -695,17 +643,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     if (!dirFile.exists()) {
                         dirFile.mkdir();
                     }
-
                     File file = new File(path + System.currentTimeMillis() + ".png");//图片完整名称
-
                     FileOutputStream fos = new FileOutputStream(file);
                     BufferedOutputStream bos = new BufferedOutputStream(fos);
                     bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                     bos.flush();
                     bos.close();//关闭流
-
                     String imgPaths = Uri.fromFile(file).toString();
-
                     int dot = imgPaths.lastIndexOf("/");
                     String imageName = imgPaths.substring(dot + 1);
                     notePhoto.setPaths(imgPaths);
@@ -721,7 +665,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 clearData();
                 tempFile = new File(Environment.getExternalStorageDirectory(), PHOTO_FILE_NAME);
                 Bitmap bm = ImageUtils.getBitmapFromUri(Uri.fromFile(tempFile), this);
-//                crop(Uri.fromFile(tempFile), bm);
                 outputUri = Uri.fromFile(tempFile);
                 saveBitmapFile(bm);
                 this.imageView.setImageBitmap(bm);
@@ -729,30 +672,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 ToastUtils.shows(this, "未找到存储卡，无法存储照片！");
             }
 
-        } else if (requestCode == PHOTO_REQUEST_CUT && data != null) {
-            try {
-                clearData();
-                bitmap = data.getParcelableExtra("data");
-                this.imageView.setImageBitmap(bitmap);
-                saveBitmapFile(bitmap);
-                if (tempFile != null) {
-                    boolean delete = tempFile.delete();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
-            clearData();
-            Bitmap bm = ImageUtils.getBitmapFromUri(outputUri, this);
-            imgPaths = outputUri.toString();
-            imageView.setImageBitmap(bm);
-        } else if (requestCode == UCrop.REQUEST_CROP && data != null) {
-            clearData();
-            Uri croppedFileUri = UCrop.getOutput(data);
-            outputUri = croppedFileUri;
-            Bitmap bm = ImageUtils.getBitmapFromUri(croppedFileUri, this);
-            saveBitmapFile(bm);
-            imageView.setImageBitmap(bm);
+        } else if (requestCode == ACTION_REQUEST_EDITIMAGE && data != null) {//裁剪结果
+            clearData();//清楚之前的批注
+            handleEditorImage(data);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -773,11 +695,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             bos.flush();
             bos.close();//关闭流
             //打开图片
-
             String namestr = Uri.fromFile(file).toString();
             int dot = namestr.lastIndexOf("/");
             name = namestr.substring(dot + 1);
-
             imgPaths = Uri.fromFile(file).toString();
             p.setPaths(Uri.fromFile(file).toString());
 
@@ -787,7 +707,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     int currindex = 1;
-    private Uri photoUri;
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -820,5 +739,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             view.setTag("B");
         }
         return new PhotosData(currindex, view.getX(), view.getY(), "");
+    }
+
+    private void handleEditorImage(Intent data) {
+        String newFilePath = data.getStringExtra("save_file_path");
+        outputUri = Uri.parse(newFilePath);
+        new LoadImageTask().execute(newFilePath);
+    }
+
+
+    private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            return BitmapUtils.getSampledBitmap(params[0], imageWidth / 4, imageHeight / 4);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            super.onPostExecute(result);
+            if (bitmap != null) {
+                bitmap.recycle();
+                bitmap = null;
+                System.gc();
+            }
+            bitmap = result;
+            imageView.setImageBitmap(bitmap);
+            saveBitmapFile(bitmap);
+        }
     }
 }

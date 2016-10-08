@@ -1,4 +1,4 @@
-package com.meidp.pictures;
+package com.meidp.pictures.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.meidp.pictures.R;
 import com.meidp.pictures.bean.PhotoKey;
 import com.meidp.pictures.bean.Photos;
 import com.meidp.pictures.utils.ImageUtils;

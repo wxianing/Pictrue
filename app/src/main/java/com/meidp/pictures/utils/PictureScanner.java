@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 
+
 import com.meidp.pictures.MainActivity;
 
 import java.io.File;
@@ -16,15 +17,14 @@ import java.io.File;
  * Author: wxianing
  * 时  间: 16/9/16
  */
-public class PictureScanner implements MediaScannerConnection.MediaScannerConnectionClient{
+public class PictureScanner implements MediaScannerConnection.MediaScannerConnectionClient {
 
     private MediaScannerConnection mMs;
     private File mFile;
     private Context context;
     private Activity activity;
 
-    File[] allFiles ;
-
+    private File[] allFiles;
 
     public PictureScanner(Context context, String pictureFolderPath, Activity activity) {
         File folder = new File(pictureFolderPath);
@@ -48,13 +48,14 @@ public class PictureScanner implements MediaScannerConnection.MediaScannerConnec
         mMs.disconnect();
     }
 
-    private void swap(File a[]){
+    private void swap(File a[]) {
         int len = a.length;
-        for(int i=0;i<len/2;i++){
+        for (int i = 0; i < len / 2; i++) {
             File tmp = a[i];
-            a[i] = a[len-1-i];
-            a[len-1-i] = tmp;
+            a[i] = a[len - 1 - i];
+            a[len - 1 - i] = tmp;
         }
     }
+    
 }
 

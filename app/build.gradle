@@ -27,4 +27,5 @@ dependencies {
     compile 'com.alibaba:fastjson:1.2.12'
     //    compile 'com.yalantis:ucrop:1.4.1'
     compile project(':ucrop')
+    compile project(':imageeditlibrary')
 }
