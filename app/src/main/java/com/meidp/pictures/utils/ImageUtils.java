@@ -2,9 +2,15 @@ package com.meidp.pictures.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Package com.meidp.pictures.utils
@@ -13,10 +19,13 @@ import android.util.Log;
  * 时  间: 16/9/16
  */
 public class ImageUtils {
+
+    private static int size = 80;
+
     public static Bitmap getBitmapFromUri(Uri uri, Context context) {
+        Bitmap bitmap = null;
         try {
-            // 读取uri所在的图片
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
             return bitmap;
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,5 +41,38 @@ public class ImageUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static Bitmap getThumbnail(Context mContext, Uri uri) {
+        try {
+            InputStream input = mContext.getContentResolver().openInputStream(uri);
+            BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+            onlyBoundsOptions.inJustDecodeBounds = true;
+            onlyBoundsOptions.inDither = true;//optional
+            onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+            BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+            input.close();
+            if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1))
+                return null;
+            int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
+            double ratio = (originalSize > size) ? (originalSize / size) : 1.0;
+            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+            bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+            bitmapOptions.inDither = true;//optional
+            bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+            input = mContext.getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+            input.close();
+            return bitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
+        else return k;
     }
 }

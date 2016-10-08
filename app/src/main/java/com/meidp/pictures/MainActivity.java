@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.meidp.pictures.adapter.ImageAdapter;
 import com.meidp.pictures.bean.NotePhoto;
 import com.meidp.pictures.bean.PhotoKey;
 import com.meidp.pictures.bean.Photos;
@@ -225,10 +226,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 if (outputUri == null) {
                     outputUri = uri;
                 }
-//                Bitmap b =imageCrop(bmp);
+//                Bitmap b = imageCrop(bmp);
 //                imageView.setImageBitmap(b);
-//                Crop.of(uri, outputUri).asSquare().start(this);
-                startCrop(outputUri);
+                Crop.of(uri, outputUri).asSquare().start(this);
+//                startCrop(outputUri);
                 break;
             case R.id.add_note:
                 View view = absoluteLayout.getChildAt(absoluteLayout.getChildCount() - 1);
@@ -396,7 +397,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         dialog.setCanceledOnTouchOutside(true);
         GridView gridview = (GridView) contentView.findViewById(R.id.gridview);
         Log.e("keyLists", ">>>>>>>>>" + keyLists.size());
-        final PhotoAdapter mAdapter = new PhotoAdapter(keyLists, MainActivity.this);
+
+        for (int i = 0; i < keyLists.size(); i++) {
+            Log.e("keyLists:", keyLists.get(i));
+        }
+
+
+        final ImageAdapter mAdapter = new ImageAdapter(keyLists, MainActivity.this);
 
         gridview.setAdapter(mAdapter);
 
@@ -409,14 +416,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
 
-        gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                PhotoAdapter.ViewHolder vh = (PhotoAdapter.ViewHolder) view.getTag();
-                vh.delete_img.setVisibility(View.VISIBLE);
-                return true;
-            }
-        });
+//        gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                ImageAdapter.ViewHolder vh = (PhotoAdapter.ViewHolder) view.getTag();
+//                vh.delete_img.setVisibility(View.VISIBLE);
+//                return true;
+//            }
+//        });
 
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
