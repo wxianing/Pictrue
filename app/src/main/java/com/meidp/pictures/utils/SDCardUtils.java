@@ -27,6 +27,21 @@ public class SDCardUtils {
 
     }
 
+
+    /**
+     * 检查SD卡
+     *
+     * @return
+     */
+    private boolean isHasSDCard() {
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * 获取SD卡路径
      *
@@ -80,6 +95,4 @@ public class SDCardUtils {
     public static String getRootDirectoryPath() {
         return Environment.getRootDirectory().getAbsolutePath();
     }
-
-
 }

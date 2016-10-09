@@ -40,11 +40,11 @@ import com.meidp.pictures.bean.PhotosData;
 import com.meidp.pictures.utils.FileUtils;
 import com.meidp.pictures.utils.ImageUtils;
 import com.meidp.pictures.utils.NullUtils;
+import com.meidp.pictures.utils.SDCardUtils;
 import com.meidp.pictures.utils.SPUtils;
 import com.meidp.pictures.utils.ToastUtils;
 import com.xinlan.imageeditlibrary.editimage.EditImageActivity;
 import com.xinlan.imageeditlibrary.editimage.utils.BitmapUtils;
-import com.yalantis.ucrop.UCrop;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -70,8 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private AbsoluteLayout absoluteLayout;
     private LinearLayout content_ll;
     private Button add_note;
-    private Photos photos;
-    private Photos p;
+    private Photos photo;
     private Uri outputUri;
     private ImageView previous_img;
     private ImageView next_img;
@@ -87,7 +86,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private List<String> keyLists = new ArrayList<>();//保存图片的数据集合
     private List<PhotosData> photosDataLists = new ArrayList<>();
     private String imgPaths = "";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,9 +115,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         save_btn = (Button) findViewById(R.id.save_btn);
         open = (Button) findViewById(R.id.open);
 
-        photos = new Photos();
 
-        p = new Photos();
+        photo = new Photos();
         String keyString = (String) SPUtils.get(this, "PhotoKey", "");
         Log.e("keyString", ">>>>>>>>>>" + keyString);
         if (NullUtils.isNotNull(keyString)) {
@@ -140,17 +137,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Log.e("result", "数据集合：" + result);
         if (NullUtils.isNotNull(result)) {
             try {
-                p = JSONObject.parseObject(result, new TypeReference<Photos>() {
+                photo = JSONObject.parseObject(result, new TypeReference<Photos>() {
                 });
-                if (p != null) {
+                if (photo != null) {
                     clearData();
-                    String url = p.getPaths();
+                    String url = photo.getPaths();
                     imgPaths = url;
                     outputUri = Uri.parse(url);
                     Log.e("imgPaths", imgPaths);
                     Bitmap bitmap = ImageUtils.getBitmapFromUri(Uri.parse(url), MainActivity.this);
                     imageView.setImageBitmap(bitmap);
-                    photosDataLists.addAll(p.getPhotosDatas());
+                    photosDataLists.addAll(photo.getPhotosDatas());
                     if (photosDataLists != null && photosDataLists.size() > 0) {
                         for (int i = 0; i < photosDataLists.size(); i++) {
                             int index = i + 1;
@@ -288,11 +285,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 photoKey.setKeys(keyLists);
                 String photoKeyString = JSONObject.toJSONString(photoKey);
                 SPUtils.save(this, "PhotoKey", photoKeyString);
-                String photoString = JSONObject.toJSONString(p);
+                String photoString = JSONObject.toJSONString(photo);
                 SPUtils.save(MainActivity.this, name, photoString);
                 Log.e("PhotoString", photoString);
                 ToastUtils.shows(this, "保存成功");
-                p.setPhotosDatas(null);
+                photo.setPhotosDatas(null);
 
                 break;
             case R.id.open:
@@ -332,11 +329,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 data.setContent(content);
                 photosDataLists.add(data);
-                p.setPaths(imgPaths);
+                photo.setPaths(imgPaths);
                 int dot = imgPaths.lastIndexOf("/");
                 name = imgPaths.substring(dot + 1);
-                p.setImageName(name);
-                p.setPhotosDatas(photosDataLists);
+                photo.setImageName(name);
+                photo.setPhotosDatas(photosDataLists);
 
                 RelativeLayout.LayoutParams ll = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 ll.setMargins(10, 10, 10, 10);
@@ -537,11 +534,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onClick(View v) {
                 photosDataLists.remove(index);
-                p.setPhotosDatas(photosDataLists);
-                String photoString = JSONObject.toJSONString(p);
-
+                photo.setPhotosDatas(photosDataLists);
+                String photoString = JSONObject.toJSONString(photo);
                 Log.e("photoString", photoString);
-
                 SPUtils.save(MainActivity.this, keys, photoString);
                 clearData();
                 initImage(keys);
@@ -579,7 +574,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void camera() {
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         // 判断存储卡是否可以用，可用进行存储
-        if (hasSdcard()) {
+        if (SDCardUtils.isSDCardEnable()) {
             intent.putExtra(MediaStore.EXTRA_OUTPUT,
                     Uri.fromFile(new File(Environment
                             .getExternalStorageDirectory(), PHOTO_FILE_NAME)));
@@ -587,19 +582,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         startActivityForResult(intent, PHOTO_REQUEST_CAMERA);
     }
 
-    /**
-     * 检查SD卡
-     *
-     * @return
-     */
-    private boolean hasSdcard() {
-        if (Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     private void clearData() {
         content_ll.removeAllViews();
@@ -625,8 +607,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Bitmap bm = ImageUtils.getBitmapFromUri(uri, this);
                 this.imageView.setImageBitmap(bm);
                 saveBitmapFile(bm);
-                p.setPaths(imgPaths);
-                String pString = JSONObject.toJSONString(p);
+                photo.setPaths(imgPaths);
+                String pString = JSONObject.toJSONString(photo);
                 SPUtils.save(MainActivity.this, "Image", pString);
             }
         } else if (requestCode == PHOTO_REQUEST_IMGNOTE) {//批注添加图片
@@ -661,7 +643,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 this.add_img_note.setImageBitmap(bm);
             }
         } else if (requestCode == PHOTO_REQUEST_CAMERA) {// 拍照
-            if (hasSdcard()) {
+            if (SDCardUtils.isSDCardEnable()) {
                 clearData();
                 tempFile = new File(Environment.getExternalStorageDirectory(), PHOTO_FILE_NAME);
                 Bitmap bm = ImageUtils.getBitmapFromUri(Uri.fromFile(tempFile), this);
@@ -699,7 +681,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             int dot = namestr.lastIndexOf("/");
             name = namestr.substring(dot + 1);
             imgPaths = Uri.fromFile(file).toString();
-            p.setPaths(Uri.fromFile(file).toString());
+            photo.setPaths(Uri.fromFile(file).toString());
 
         } catch (IOException e) {
             e.printStackTrace();
