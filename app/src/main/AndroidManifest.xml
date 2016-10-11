@@ -24,10 +24,10 @@
         <activity
             android:name="com.soundcloud.android.crop.CropImageActivity"
             android:screenOrientation="landscape" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <!--<activity-->
+            <!--android:name="com.yalantis.ucrop.UCropActivity"-->
+            <!--android:screenOrientation="landscape"-->
+            <!--android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
 
         <!--选择相册图片Activity-->
         <activity

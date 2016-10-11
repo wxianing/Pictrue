@@ -103,7 +103,7 @@ public class CropFragment extends Fragment {
 		for (int i = 0, len = dataList.size(); i < len; i++) {
 			TextView text = new TextView(activity);
 			text.setTextColor(UNSELECTED_COLOR);
-			text.setTextSize(20);
+			text.setTextSize(14);
 			text.setText(dataList.get(i).getText());
 			textViewList.add(text);
 			ratioList.addView(text, params);

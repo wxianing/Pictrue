@@ -26,6 +26,6 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.alibaba:fastjson:1.2.12'
     //    compile 'com.yalantis:ucrop:1.4.1'
-    compile project(':ucrop')
+//    compile project(':ucrop')
     compile project(':imageeditlibrary')
 }

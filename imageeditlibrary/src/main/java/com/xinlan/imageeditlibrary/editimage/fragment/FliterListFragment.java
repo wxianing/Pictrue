@@ -1,10 +1,5 @@
 package com.xinlan.imageeditlibrary.editimage.fragment;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.graphics.Bitmap;
@@ -26,6 +21,10 @@ import com.xinlan.imageeditlibrary.R;
 import com.xinlan.imageeditlibrary.editimage.EditImageActivity;
 import com.xinlan.imageeditlibrary.editimage.fliter.PhotoProcessing;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * 滤镜列表fragment
@@ -197,8 +196,11 @@ public class FliterListFragment extends Fragment {
         mFilterGroup.removeAllViews();
         for (int i = 0, len = fliters.length; i < len; i++) {
             TextView text = new TextView(activity);
+
+            text.setPadding(10, 5, 10, 5);
+
             text.setTextColor(Color.WHITE);
-            text.setTextSize(20);
+            text.setTextSize(14);
             text.setText(fliters[i]);
             mFilterGroup.addView(text, params);
             text.setTag(i);

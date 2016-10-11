@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:background="@drawable/linear_white"
         android:padding="@dimen/dp5">
@@ -24,7 +24,7 @@
         <GridView
             android:id="@+id/gridview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/edit"
             android:numColumns="4"
             android:scrollbars="none" />

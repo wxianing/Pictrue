@@ -1,0 +1,16 @@
+<resources>
+
+    <style name="image_edit_menu_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingBottom">@dimen/image_edit_menu_margin</item>
+        <item name="android:paddingLeft">@dimen/image_edit_menu_padding</item>
+        <item name="android:paddingTop">@dimen/image_edit_menu_margin</item>
+        <item name="android:paddingRight">@dimen/image_edit_menu_padding</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">@dimen/image_edit_text_size</item>
+    </style>
+
+</resources>
