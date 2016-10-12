@@ -18,29 +18,34 @@
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.soundcloud.android.crop.CropImageActivity"
             android:screenOrientation="landscape" />
-        <!--<activity-->
-            <!--android:name="com.yalantis.ucrop.UCropActivity"-->
-            <!--android:screenOrientation="landscape"-->
-            <!--android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
 
-        <!--选择相册图片Activity-->
+        <!-- <activity -->
+        <!-- android:name="com.yalantis.ucrop.UCropActivity" -->
+        <!-- android:screenOrientation="landscape" -->
+        <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> -->
+
+
+        <!-- 选择相册图片Activity -->
         <activity
             android:name="com.xinlan.imageeditlibrary.picchooser.SelectPictureActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
-        <!--图片编辑Activity-->
+        <!-- 图片编辑Activity -->
         <activity
             android:name="com.xinlan.imageeditlibrary.editimage.EditImageActivity"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
-
+            android:windowSoftInputMode="adjustPan"></activity>
+        <activity
+            android:name=".activity.ScanImageActivity"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
+
 </manifest>

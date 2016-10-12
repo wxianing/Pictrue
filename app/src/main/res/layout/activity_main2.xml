@@ -25,8 +25,7 @@
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:src="@mipmap/ic_launcher" />
+                android:scaleType="fitXY" />
 
         </AbsoluteLayout>
 
@@ -61,14 +60,14 @@
                 android:text="选图" />
 
             <Button
-                android:id="@+id/add_note"
-                style="@style/button_style"
-                android:text="添加批注" />
-
-            <Button
                 android:id="@+id/crop_btn"
                 style="@style/crop_button_style"
                 android:text="裁剪" />
+
+            <Button
+                android:id="@+id/add_note"
+                style="@style/button_style"
+                android:text="批注" />
 
             <Button
                 android:id="@+id/open"
@@ -78,7 +77,7 @@
             <Button
                 android:id="@+id/save_btn"
                 style="@style/save_button_style"
-                android:text="保存" />
+                android:text="另保为" />
 
         </LinearLayout>
 

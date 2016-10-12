@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+
 import com.xinlan.imageeditlibrary.BaseActivity;
 
 public class SelectPictureActivity extends BaseActivity {
@@ -39,7 +40,9 @@ public class SelectPictureActivity extends BaseActivity {
     }
 
     void imageSelected(final String imgPath, final String imgTaken, final long imageSize) {
-        returnResult(imgPath, imgTaken, imageSize);
+        if (imgPath != null && !imgPath.equals("")) {
+            returnResult(imgPath, imgTaken, imageSize);
+        }
     }
 
     private void returnResult(final String imgPath, final String imageTaken, final long imageSize) {

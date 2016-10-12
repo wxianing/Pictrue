@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,7 @@ public class ImageUtils {
     public static Bitmap getBitmapFromUri(Uri uri, Context context) {
         Bitmap bitmap = null;
         try {
+            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
             bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
             return bitmap;
         } catch (Exception e) {
@@ -74,5 +76,28 @@ public class ImageUtils {
         int k = Integer.highestOneBit((int) Math.floor(ratio));
         if (k == 0) return 1;
         else return k;
+    }
+
+    public static Bitmap getPicFromBytes(byte[] bytes, BitmapFactory.Options opts) {
+        if (bytes != null)
+            if (opts != null)
+                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, opts);
+            else
+                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        return null;
+    }
+
+    public static byte[] readStream(InputStream inStream) throws Exception {
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        while ((len = inStream.read(buffer)) != -1) {
+            outStream.write(buffer, 0, len);
+        }
+        byte[] data = outStream.toByteArray();
+        outStream.close();
+        inStream.close();
+        return data;
+
     }
 }
